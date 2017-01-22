@@ -1,0 +1,105 @@
+ <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{data['subData']['titleFirst']}}
+        <small>{{data['subData']['titleSecond']}}</small>
+      </h1>                                                                                                    
+      <ol class="breadcrumb">                                                                                  
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>                                          
+        <li class="active"> {{data['subData']['titleFirst']}}</li>
+      </ol>                                                                                                    
+    </section>                                                                                                 
+ <!-- Main content -->
+    <section class="content">
+
+     <div class="row">
+        <div class="col-md-3">
+          <div class="box">
+          <div class="box-body box-profile">
+            <div class="box-header with-border">
+              <h3 class="box-title">Create Contact</h3>
+            </div>
+    <form role="form" action="writemessage" method="post" >
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="contact_name">Name</label>
+                  <input type="text" class="form-control" id="recipient" name="contact_name" placeholder="Contact Name">
+                </div>
+                <div class="form-group">
+                  <label for="contact_number">Mobile Number</label>
+                  <input type="text" class="form-control" id="contact_number" name="contact_number" placeholder="Mobile Number">
+                </div>
+
+                <div class="form-group">
+                  <label for="group">Group</label>
+                  <select class="form-control" id="group" name="group">
+                    <option>option 1</option>
+                    <option>option 2</option>
+                    <option>option 3</option>
+                    <option>option 4</option>
+                    <option>option 5</option>
+                  </select>
+                </div>
+
+
+
+                <div class="form-group">
+                  <label for="notes">Notes</label>
+                  <textarea class="form-control" rows="3" id="notes" name="notes" placeholder="Notes..."></textarea>
+                </div>
+
+
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Create Contact</button>
+              </div>
+            </form>
+          </div>
+          </div>
+        </div>
+
+        <div class="col-xs-9">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">{{data['subData']['boxTitle']}}</h3>
+
+              <div class="box-tools">
+                <div class="input-group input-group-sm" style="width: 150px;">
+
+                </div>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+              <table id="tableData" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                 {% for head in data['subData']['headers'] %}
+                  <th>{{ head }}</th>
+                 {% endfor %}
+                </tr>
+                </thead>
+<!--
+                <tfoot>
+                 {% for head in data['subData']['headers'] %}
+                  <th>{{ head }}</th>
+                 {% endfor %}
+                </tfoot>
+-->
+
+             </table>                                                                                   
+            </div>                                                                                       
+            <!-- /.box-body -->                                                                          
+          </div>                                                                                         
+          <!-- /.box -->                                                                                 
+        </div>                                                                                           
+      </div>                                                                                             
+    </section>                                                                                           
+    <!-- /.content -->                                                                                   
+  </div>                                                                                                 
+  <!-- /.content-wrapper -->  
+

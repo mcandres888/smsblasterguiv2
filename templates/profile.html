@@ -1,0 +1,28 @@
+ <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        {{data['subData']['titleFirst']}}
+      </h1>                                                                                                    
+      <ol class="breadcrumb">                                                                                  
+      {% for bread in data['subData']['breadcrumbs'] %}
+         <li class="{{ bread['active']}}"><a href="{{ bread['href']}}"><i class="{{ bread['class']}}"></i> {{ bread['title']}}</a></li>                                          
+      {% endfor %}
+      </ol>                                                                                                    
+    </section>                                                                                                 
+ <!-- Main content -->
+    <section class="content">
+     <div class="row">
+       {% include "profile_userData.html" %}
+       {% include "profile_userActivity.html" %}
+      
+
+
+
+      </div>
+    </section>
+    <!-- /.content --> 
+  </div>
+  <!-- /.content-wrapper -->  
+

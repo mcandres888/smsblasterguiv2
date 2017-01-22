@@ -1,0 +1,5 @@
+Flask==0.10.1
+Flask-Login
+Flask-User==0.6.3
+requests
+#MySQLdb sudo apt-get install python-mysqldb

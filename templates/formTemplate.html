@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{# set parent data #}
+{% block title %}{{ data['title']}}{% endblock %}
+
+{% block content%}
+
+{% include "form.html" %}
+                                           
+{% endblock content %}
+
+{% block footer_script %}
+    $.widget.bridge('uibutton', $.ui.button);
+{% endblock %}

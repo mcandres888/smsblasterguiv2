@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{# set parent data #}
+{% block title %}{{ data['title']}}{% endblock %}
+{% block head_additional %}
+<link rel="stylesheet" href="static/plugins/datatables/jquery.dataTables.min.css"> 
+{% endblock head_additional %}
+
+{% block content%}
+
+{% include data['tableHtml'] %}
+                                           
+{% endblock content %}
+
+{% block footer_script %}
+    $.widget.bridge('uibutton', $.ui.button);
+$(document).ready(function() {
+   $('#tableData')
+    .addClass( 'nowrap' )
+    .DataTable( {
+      "pageLength": 10,
+      "paging": true,
+      "autoWidth": true,
+      "info": true,
+      "processing": true,
+      "serverSide": true,
+      "ordering": false,
+      "ajax": "{{ data['subData']['data_url']}}"
+    } );
+} );
+
+
+
+{% endblock %}
