@@ -21,7 +21,7 @@
             <div class="box-header with-border">
               <h3 class="box-title">Create Contact</h3>
             </div>
-    <form role="form" action="writemessage" method="post" >
+    <form role="form" action="" method="post" >
               <div class="box-body">
                 <div class="form-group">
                   <label for="contact_name">Name</label>
@@ -35,11 +35,9 @@
                 <div class="form-group">
                   <label for="group">Group</label>
                   <select class="form-control" id="group" name="group">
-                    <option>option 1</option>
-                    <option>option 2</option>
-                    <option>option 3</option>
-                    <option>option 4</option>
-                    <option>option 5</option>
+                    {% for group in data['subData']['groups'] %}
+                    <option value="{{ group['id'] }}">{{ group['name']}}</option>
+                    {% endfor %}
                   </select>
                 </div>
 

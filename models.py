@@ -1,6 +1,7 @@
 # models class
 import requests
 import flask_login
+from flask import render_template, request, redirect, jsonify
 import uuid
 import json
 import time
@@ -55,7 +56,7 @@ class User(flask_login.UserMixin):
         for x in result['rows']:
             date_created =  datetime.datetime.fromtimestamp(
                     x['value']['date_created']).strftime('%Y-%m-%d %H:%M:%S')
-            actions = "<a href='%s/profile/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( self.config['DOMAIN'], x['id'] )
+            actions = "<a href='%s/profile/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( request.url_root, x['id'] )
             tableData['data'].append([
                 x['id'],
                 x['value']['userdisplayname'],
@@ -194,7 +195,7 @@ class Inbox(TableModel):
         tableData['data'] = []
         for x in result:
             date_recieved = x[1].strftime('%Y-%m-%d %H:%M:%S')
-            actions = "<a href='%s/profile/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( self.config['DOMAIN'], x[10] )
+            actions = "<a href='%s/profile/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( request.url_root, x[10] )
             tableData['data'].append([
                 x[3],
                 date_recieved,
@@ -233,7 +234,7 @@ class SentItems(TableModel):
         tableData['data'] = []
         for x in result:
             date_sent = x[2].strftime('%Y-%m-%d %H:%M:%S')
-            actions = "<a href='%s/profile/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( self.config['DOMAIN'], x[10] )
+            actions = "<a href='%s/profile/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( request.url_root, x[10] )
             tableData['data'].append([
                 x[5],
                 date_sent,
@@ -273,7 +274,7 @@ class Outbox(TableModel):
         tableData['data'] = []
         for x in result:
             date_sent = x[2].strftime('%Y-%m-%d %H:%M:%S')
-            actions = "<a href='%s/profile/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( self.config['DOMAIN'], x[10] )
+            actions = "<a href='%s/profile/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( request.url_root, x[10] )
             tableData['data'].append([
                 x[6],
                 date_sent,
@@ -286,6 +287,15 @@ class Outbox(TableModel):
 
 class Contacts(TableModel):
     table = "contacts"
+ 
+    def create ( self, json_data, group_data):
+        query_str = "INSERT INTO %s (contact_name, contact_number, notes, group_id, group_name )VALUES('%s', '%s', '%s', %d, '%s')" % (self.table, json_data['contact_name'], json_data['contact_number'], json_data['notes'], group_data["id"], group_data["name"])
+        self.db.exec_query(query_str)
+
+        return  self.db.getLastInsertedId()
+        
+
+
 
     def tableData(self, requestInfo):
         # request info data
@@ -311,12 +321,12 @@ class Contacts(TableModel):
         # recreate data
         tableData['data'] = []
         for x in result:
-            actions = "<a href='%s/phonebook/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( self.config['DOMAIN'], x[0] )
+            actions = "<a href='%s/phonebook/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( request.url_root, x[0] )
             tableData['data'].append([
                 x[1],
                 x[5],
+                x[2],
                 x[3],
-                x[4],
                 actions
             ])
 
@@ -325,6 +335,31 @@ class Contacts(TableModel):
 
 class Groups(TableModel):
     table = "groups"
+    def getAll (self):
+        query_str = "SELECT * FROM %s" % (self.table)
+        result = self.db.fetch_query(query_str)
+        data = []
+        for x in result:
+            data.append({
+                "id" : x[0],
+                "name" : x[1],
+            })
+        return data
+
+    def get(self, id):
+        query_str = "SELECT * FROM %s WHERE id=%d LIMIT 1" % (self.table, int(id))
+        result = self.db.fetch_one(query_str)
+        if result == None:
+            return None
+
+        data = {
+            "id" : result[0],
+            "name" : result[1],
+        }
+        return data
+
+
+
     def tableData(self, requestInfo):
         # request info data
         draw = int(requestInfo.get("draw"))
@@ -349,7 +384,7 @@ class Groups(TableModel):
         # recreate data
         tableData['data'] = []
         for x in result:
-            actions = "<a href='%s/phonebook/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( self.config['DOMAIN'], x[0] )
+            actions = "<a href='%s/group/%s'><button type='button' class='btn btn-block btn-success'> View </button></a>" % ( request.url_root, x[0] )
             tableData['data'].append([
                 x[1],
                 x[2],
@@ -361,6 +396,11 @@ class Groups(TableModel):
     def create ( self, json_data ):
         query_str = "INSERT INTO %s (group_name, notes )VALUES('%s', '%s')" % (self.table, json_data['group_name'], json_data['notes'])
         self.db.exec_query(query_str)
+
+    def bindGroupContact ( self, group_id, contact_id ):
+        query_str = "INSERT INTO contact_group (contact_id, group_id )VALUES(%d, %d)" % (contact_id, group_id)
+        self.db.exec_query(query_str)
+
 
 
 

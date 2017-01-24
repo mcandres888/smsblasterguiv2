@@ -9,7 +9,6 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = 'sms888'
-    DOMAIN = 'http://192.168.1.199:5000'
     USERNAME = None
     PASSWORD = None
     DBTYPE = 'mysql'

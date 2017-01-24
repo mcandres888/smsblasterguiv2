@@ -83,22 +83,22 @@ class AdminController(object):
         data = {
             "title" : "RegrowHelmet",
             "username" : "Marc Andres",
-            "domain" : self._app.config['DOMAIN'],
+            "domain" : request.url_root,
             "nav" : self.getNav()
         }
         return data
 
     # eventually nav will be different per user type
     def getNav(self):
-        domain = self._app.config['DOMAIN']
+        domain = request.url_root
         nav = [
-            { "href" : "%s/dashboard" % domain, "class" : "fa fa-dashboard", "text" : "Dashboard" },
-            { "href" : "%s/inbox" % domain, "class" : "fa fa-inbox", "text" : "Inbox" },
-            { "href" : "%s/outbox" % domain, "class" : "fa fa-rocket", "text" : "Outbox" },
-            { "href" : "%s/writemessage" % domain, "class" : "fa fa-edit", "text" : "Write Message" },
-            { "href" : "%s/sentitems" % domain, "class" : "fa fa-external-link", "text" : "Sent Items" },
-            { "href" : "%s/phonebook" % domain, "class" : "fa fa-book", "text" : "PhoneBook" },
-            { "href" : "%s/group" % domain, "class" : "fa fa-group", "text" : "Groups" },
+            { "href" : "%sdashboard" % domain, "class" : "fa fa-dashboard", "text" : "Dashboard" },
+            { "href" : "%sinbox" % domain, "class" : "fa fa-inbox", "text" : "Inbox" },
+            { "href" : "%soutbox" % domain, "class" : "fa fa-rocket", "text" : "Outbox" },
+            { "href" : "%swritemessage" % domain, "class" : "fa fa-edit", "text" : "Write Message" },
+            { "href" : "%ssentitems" % domain, "class" : "fa fa-external-link", "text" : "Sent Items" },
+            { "href" : "%sphonebook" % domain, "class" : "fa fa-book", "text" : "PhoneBook" },
+            { "href" : "%sgroup" % domain, "class" : "fa fa-group", "text" : "Groups" },
         ]    
         return nav
 
@@ -113,7 +113,8 @@ class AdminController(object):
             "titleSecond" : "List",
             "boxTitle" : "Phonebook Table",
             "headers" : ["Name", "Group", "Number", "Notes", "Action"],
-            "data_url" : "/phonebook/list"
+            "data_url" : "/phonebook/list",
+            "groups" : self._app.group.getAll(),
         }
 
         data['subData'] = subData
@@ -136,6 +137,12 @@ class AdminController(object):
         data['tableHtml'] = "table_withform_group.html"
 
         return render_template('tableTemplate.html', data=data)
+
+    def phonebook_create(self, json_data):
+
+        group_data = self._app.group.get(json_data['group'])
+        contact_id = self._app.phonebook.create(json_data, group_data)
+        self._app.group.bindGroupContact(group_data["id"], contact_id)
 
     def group_create(self, json_data):
         self._app.group.create(json_data)

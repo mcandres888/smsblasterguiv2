@@ -56,6 +56,8 @@ class SQLPrototype:
         self.close()
         return data
 
+    def getLastInsertedId ( self ):
+        return self.cur.lastrowid
 
     def create_database(self, cursor, DB_NAME):
         try:

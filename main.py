@@ -78,14 +78,14 @@ def Main():
 def login():
     print request.method
     if request.method == 'GET':
-        return Admin.login(app)
+        return Admin.login()
     email = request.form['email']
     password = request.form['password']
     if User.isPasswordOK(email, password):
         flask_login.login_user(User)
         return Admin.dashboard()
 
-    return Admin.login(app, True)
+    return Admin.login( True)
 
 @app.route('/protected')
 @flask_login.login_required
@@ -134,12 +134,16 @@ def writemessage():
         message = request.form['message']
         app.sms.send(recipient, message)
 
+    #return redirect("%swritemessage" % request.url_root) 
     return Admin.writemessage()
 
 
-@app.route('/phonebook')
+@app.route('/phonebook', methods=['GET', 'POST'])
 @flask_login.login_required
 def phonebook():
+    if request.method == 'POST':
+        Admin.phonebook_create(request.form)
+    #return redirect("%sphonebook" % request.url_root) 
     return Admin.phonebook()
 
 @app.route('/group',  methods=['GET', 'POST'])
@@ -149,6 +153,7 @@ def group():
         Admin.group_create(request.form)
 
 
+    #return redirect("%sgroup" % request.url_root) 
     return Admin.group()
 
 
